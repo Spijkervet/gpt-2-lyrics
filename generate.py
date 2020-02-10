@@ -30,8 +30,8 @@ def on_worker_init(**_):
     gpt2.load_gpt2(sess)
 
 @celery.task
-def get_lyric(prefix):
-    lyrics = gpt2.generate(sess, prefix=prefix, temperature=0.7, nsamples=8, length=200, batch_size=8, return_as_list=True,
+def get_lyric(prefix, temperature, words):
+    lyrics = gpt2.generate(sess, prefix=prefix, temperature=temperature, nsamples=8, length=words, batch_size=8, return_as_list=True,
         truncate="<|endoftext|>", include_prefix=False)
     return lyrics
 
@@ -39,9 +39,10 @@ def get_lyric(prefix):
 def index():
     data = request.get_json(force=True)
     prefix = data['lyrics'].strip()
-    print(prefix)
+    temperature = data['temperature']
+    words = data['words']
     j = {}
-    lyric = get_lyric.apply_async(args=[prefix]).get()
+    lyric = get_lyric.apply_async(args=[prefix, temperature, words]).get()
     lyric = [l[l.find(prefix)+len(prefix):] for l in lyric]
     lyric = [l.replace('<|startoftext|>', '') for l in lyric]
     j['lyrics'] = lyric
