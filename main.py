@@ -8,12 +8,12 @@ if not os.path.isdir(os.path.join("models", model_name)):
 	gpt2.download_gpt2(model_name=model_name)   # model is saved into current directory under /models/124M/
 
 
-file_name = "dutch_lyrics.csv"
+file_name = "dutch_lyrics_big.csv"
 
 sess = gpt2.start_tf_sess()
 gpt2.finetune(sess,
               file_name,
               model_name=model_name,
-              steps=50000)   # steps is max number of training steps
+              steps=500000)   # steps is max number of training steps
 
 gpt2.generate(sess)

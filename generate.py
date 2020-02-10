@@ -31,7 +31,7 @@ def on_worker_init(**_):
 
 @celery.task
 def get_lyric(prefix):
-    lyrics = gpt2.generate(sess, prefix=prefix, temperature=0.4, nsamples=4, length=50, batch_size=10, return_as_list=True,
+    lyrics = gpt2.generate(sess, prefix=prefix, temperature=0.7, nsamples=8, length=200, batch_size=8, return_as_list=True,
         truncate="<|endoftext|>", include_prefix=False)
     return lyrics
 
