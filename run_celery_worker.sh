@@ -1,1 +1,0 @@
-celery worker -c 1 -A generate.celery --loglevel=info
