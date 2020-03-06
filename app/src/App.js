@@ -113,7 +113,7 @@ class MyComponent extends React.Component {
     text = this.state.title + "\n" + text
 
     this.state.status = "Generating..."
-    return fetch("http://lyrics.jspijkervet.com/gpt2_lyrics", {
+    return fetch("http://lyrics.jspijkervet.com/api/gpt2_lyrics", {
       method: 'POST',
       // mode: 'no-cors', // no-cors, *cors, same-origin
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -154,7 +154,7 @@ class MyComponent extends React.Component {
   healthCheck() {
     setTimeout(this.healthCheck, 2000)
 
-    fetch("http://lyrics.jspijkervet.com/health", {
+    fetch("http://lyrics.jspijkervet.com/api/health", {
       method: 'POST'
     })
       .then((response) => {
