@@ -4,6 +4,6 @@ env
 output
 runs
 *.csv
-lyrics.txt
-gpt2_cached_lm_256_lyrics.txt
-lyrics_e2
+*.txt
+checkpoint
+lyrics
