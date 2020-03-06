@@ -3,18 +3,20 @@ import threading
 import regex as re
 import logging
 
+from googletrans import Translator
+
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from tendo import singleton
 
-# from transformers import (
-#     GPT2LMHeadModel,
-#     GPT2Tokenizer
-# )
+from transformers import (
+    GPT2LMHeadModel,
+    GPT2Tokenizer
+)
 
 
-from run_generation import generate 
+from run_generation import generate
 device = os.environ.get('DEVICE', 'cpu')
 flavor_id = device + os.environ.get('INSTANCE', ':0')
 logging.basicConfig(filename=f"logs/{hash(flavor_id)}.log", level=logging.INFO)
@@ -31,19 +33,19 @@ app.add_middleware(
 
 lock = threading.RLock()
 
-# model_class = GPT2LMHeadModel
-# tokenizer_class = GPT2Tokenizer
-# model = model_class.from_pretrained("lyrics/checkpoint-46500")
-# tokenizer = tokenizer_class.from_pretrained("lyrics/checkpoint-46500")
-# model.to('cpu')
-
-import re
-from googletrans import Translator
-import gpt_2_simple as gpt2
-
-sess, graph = gpt2.start_tf_sess()
-gpt2.load_gpt2(sess, run_name="100k")
 translator = Translator()
+
+model_class = GPT2LMHeadModel
+tokenizer_class = GPT2Tokenizer
+model = model_class.from_pretrained("checkpoint/checkpoint-46500", torchscript=True)
+tokenizer = tokenizer_class.from_pretrained("checkpoint/checkpoint-46500")
+model.to('cpu')
+
+
+# import gpt_2_simple as gpt2
+# sess, graph = gpt2.start_tf_sess()
+# gpt2.load_gpt2(sess, run_name="100k")
+
 
 class Prompt(BaseModel):
     prompt:str = Field(..., max_length=3000, title='Model prompt')
@@ -60,20 +62,20 @@ def gen_sample(prompt: Prompt):
         if prompt.language != "en":
             prompt.prompt = translator.translate(prompt.prompt, src=prompt.language, dest="en").text
 
-        with graph.as_default():
-            samples = gpt2.generate(sess, prefix=prompt.prompt, temperature=prompt.temperature, nsamples=prompt.num_samples, length=prompt.length, batch_size=prompt.num_samples, return_as_list=True,
-                truncate="<|endoftext|>", include_prefix=False)
-        # samples = generate(device, model, tokenizer, prompt.prompt, prompt.length, temperature=prompt.temperature, num_return_sequences=prompt.num_samples)
-        
+        # with graph.as_default():
+        #     samples = gpt2.generate(sess, prefix=prompt.prompt, temperature=prompt.temperature, nsamples=prompt.num_samples, length=prompt.length, batch_size=prompt.num_samples, return_as_list=True,
+        #         truncate="<|endoftext|>", include_prefix=False)
+        samples = generate(device, model, tokenizer, prompt.prompt, prompt.length, temperature=prompt.temperature, num_return_sequences=prompt.num_samples)
+
         new_lyrics = []
         for l in samples:
             l = l.replace('<|startoftext|>', '')
 
             if prompt.language != "en":
                 l = translator.translate(l, dest=prompt.language).text
-                
+
             new_lyrics.append(l)
-        
+
         r['lyrics'] = new_lyrics
         return r
 

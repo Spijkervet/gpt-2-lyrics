@@ -1,5 +1,8 @@
 __pycache__
 .vscode
+dist
+build
+models
 env
 output
 runs

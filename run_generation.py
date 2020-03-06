@@ -243,14 +243,14 @@ def main():
 
     model_class = GPT2LMHeadModel
     tokenizer_class = GPT2Tokenizer
-    model = model_class.from_pretrained("output")
-    tokenizer = tokenizer_class.from_pretrained("output")
+    model = model_class.from_pretrained(args.model_name_or_path)
+    tokenizer = tokenizer_class.from_pretrained(args.model_name_or_path)
     model.to(args.device)
 
     samples = generate(args.device, model, tokenizer, prompt_text, args.length, args.temperature, args.k, args.p, args.repetition_penalty, args.num_return_sequences, args.stop_token)
     for s in samples:
         print(s)
-   
+
 
 if __name__ == "__main__":
     main()

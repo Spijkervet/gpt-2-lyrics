@@ -1,6 +1,7 @@
 transformers
-tensorflow-gpu
+tensorflow
 torch
 fastapi
 tendo
 starlette
+uvicorn
