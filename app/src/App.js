@@ -155,7 +155,7 @@ class MyComponent extends React.Component {
     setTimeout(this.healthCheck, 2000)
 
     fetch("http://lyrics.jspijkervet.com/api/health", {
-      method: 'POST'
+      method: 'GET'
     })
       .then((response) => {
         if (response.ok) {
