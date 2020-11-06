@@ -19,9 +19,13 @@ from transformers import (
 from run_generation import generate
 device = os.environ.get('DEVICE', 'cpu')
 flavor_id = device + os.environ.get('INSTANCE', ':0')
+
+if not os.path.exists("logs"):
+    os.makedirs("logs")
+
 logging.basicConfig(filename=f"logs/{hash(flavor_id)}.log", level=logging.INFO)
 logger = logging.getLogger(__name__)
-me = singleton.SingleInstance(flavor_id=flavor_id)
+# me = singleton.SingleInstance(flavor_id=flavor_id)
 app = FastAPI(title="GPT-2", version="0.1",)
 app.add_middleware(
         CORSMiddleware,
@@ -37,14 +41,9 @@ translator = Translator()
 
 model_class = GPT2LMHeadModel
 tokenizer_class = GPT2Tokenizer
-model = model_class.from_pretrained("checkpoint/checkpoint-46500", torchscript=True)
-tokenizer = tokenizer_class.from_pretrained("checkpoint/checkpoint-46500")
+model = model_class.from_pretrained("lyrics", torchscript=True)
+tokenizer = tokenizer_class.from_pretrained("lyrics")
 model.to('cpu')
-
-
-# import gpt_2_simple as gpt2
-# sess, graph = gpt2.start_tf_sess()
-# gpt2.load_gpt2(sess, run_name="100k")
 
 
 class Prompt(BaseModel):
@@ -70,6 +69,7 @@ def gen_sample(prompt: Prompt):
         new_lyrics = []
         for l in samples:
             l = l.replace('<|startoftext|>', '')
+            l = l.replace("<|endoftext|>", "")
 
             if prompt.language != "en":
                 l = translator.translate(l, dest=prompt.language).text

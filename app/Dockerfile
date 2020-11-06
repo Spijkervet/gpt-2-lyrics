@@ -16,6 +16,6 @@ EXPOSE 5000
 # If you are building your code for production
 # RUN npm ci --only=production
 
-RUN npm build
+RUN npm run build
 
-CMD [ "serve", "-s", "-l", "tcp://0.0.0.0:5000", "build"]
+CMD [ "serve", "-s", "build"]

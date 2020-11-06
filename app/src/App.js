@@ -18,7 +18,7 @@ class MyComponent extends React.Component {
       date: new Date(),
       temperature: 0.7,
       length: 40,
-      language: "en",
+      language: "nl",
       title: "Title",
       text: "",
       healthcheck: "Offline",
@@ -113,7 +113,7 @@ class MyComponent extends React.Component {
     text = this.state.title + "\n" + text
 
     this.state.status = "Generating..."
-    return fetch("http://lyrics.jspijkervet.com/api/gpt2_lyrics", {
+    return fetch("http://localhost:8000/gpt2_lyrics", {
       method: 'POST',
       // mode: 'no-cors', // no-cors, *cors, same-origin
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -154,7 +154,7 @@ class MyComponent extends React.Component {
   healthCheck() {
     setTimeout(this.healthCheck, 2000)
 
-    fetch("http://lyrics.jspijkervet.com/api/health", {
+    fetch("http://localhost:5000/health", {
       method: 'GET'
     })
       .then((response) => {
@@ -185,8 +185,8 @@ class MyComponent extends React.Component {
           </div>
           <div className="slider-container">
             <select id="lang" onChange={this.handleLanguage} value={this.state.language}>
-              <option value="en">English</option>
-              <option value="nl">Nederlands</option>
+            <option value="en">English</option>
+            <option value="nl">Nederlands</option>
             </select>
           </div>
           <div className="slider-container">
