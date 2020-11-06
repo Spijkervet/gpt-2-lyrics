@@ -17,7 +17,8 @@ from transformers import (
 
 
 from run_generation import generate
-device = os.environ.get('DEVICE', 'cpu')
+# device = os.environ.get('DEVICE', 'cpu')
+device = "cuda:0"
 flavor_id = device + os.environ.get('INSTANCE', ':0')
 
 if not os.path.exists("logs"):
@@ -25,7 +26,7 @@ if not os.path.exists("logs"):
 
 logging.basicConfig(filename=f"logs/{hash(flavor_id)}.log", level=logging.INFO)
 logger = logging.getLogger(__name__)
-# me = singleton.SingleInstance(flavor_id=flavor_id)
+me = singleton.SingleInstance(flavor_id=flavor_id)
 app = FastAPI(title="GPT-2", version="0.1",)
 app.add_middleware(
         CORSMiddleware,
@@ -43,8 +44,7 @@ model_class = GPT2LMHeadModel
 tokenizer_class = GPT2Tokenizer
 model = model_class.from_pretrained("lyrics", torchscript=True)
 tokenizer = tokenizer_class.from_pretrained("lyrics")
-model.to('cpu')
-
+model = model.to(device)
 
 class Prompt(BaseModel):
     prompt:str = Field(..., max_length=3000, title='Model prompt')
@@ -61,22 +61,25 @@ def gen_sample(prompt: Prompt):
         if prompt.language != "en":
             prompt.prompt = translator.translate(prompt.prompt, src=prompt.language, dest="en").text
 
-        # with graph.as_default():
-        #     samples = gpt2.generate(sess, prefix=prompt.prompt, temperature=prompt.temperature, nsamples=prompt.num_samples, length=prompt.length, batch_size=prompt.num_samples, return_as_list=True,
-        #         truncate="<|endoftext|>", include_prefix=False)
-        samples = generate(device, model, tokenizer, prompt.prompt, prompt.length, temperature=prompt.temperature, num_return_sequences=prompt.num_samples)
+        prompt.prompt = "<|startoftext|>" + prompt.prompt
+        repetition_penalty = 1.0
+        samples = generate(device, model, tokenizer, prompt.prompt, prompt.length, temperature=prompt.temperature, num_return_sequences=prompt.num_samples, repetition_penalty=repetition_penalty)
 
         new_lyrics = []
         for l in samples:
             l = l.replace('<|startoftext|>', '')
             l = l.replace("<|endoftext|>", "")
+            l = l.replace(prompt.prompt, "", 1)
 
             if prompt.language != "en":
-                l = translator.translate(l, dest=prompt.language).text
+                l = translator.translate(l, src="en", dest=prompt.language).text
 
+            l = l.replace(" u ", " je ")
+            l = l.replace("U ", "Je ")
             new_lyrics.append(l)
 
         r['lyrics'] = new_lyrics
+        # print("OUTPUT", new_lyrics)
         return r
 
 @app.get("/health")
