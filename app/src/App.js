@@ -6,7 +6,7 @@ import 'react-quill/dist/quill.snow.css'; // ES6
 import QuillMention from 'quill-mention'
 
 import 'bootstrap/dist/css/bootstrap.css';
-import './App.css';
+import './App-dark.css';
 
 
 
@@ -176,19 +176,19 @@ class MyComponent extends React.Component {
           <div className="slider-container">
             <span className="slider-name">Lijpe slider</span>
             <small>{this.state.temperature}</small>
-            <input className="slider" type="range" min="0" max="1" defaultValue={this.state.temperature} step="0.1" onChange={this.changeTemperature} />
+            <input className="slider" type="range" min="0" max="2" defaultValue={this.state.temperature} step="0.1" onChange={this.changeTemperature} />
           </div>
           <div className="slider-container">
             <span className="slider-name">Words</span>
             <small>{this.state.length}</small>
             <input className="slider" type="range" min="1" max="1000" defaultValue={this.state.length} step="20" onChange={this.changeLength} />
           </div>
-          <div className="slider-container">
+          {/* <div className="slider-container">
             <select id="lang" onChange={this.handleLanguage} value={this.state.language}>
             <option value="en">English</option>
             <option value="nl">Nederlands</option>
             </select>
-          </div>
+          </div> */}
           <div className="slider-container">
             <span className="slider-name">Server</span>
             <span style={{color: 'green'}}>{this.state.healthcheck}</span>
@@ -205,7 +205,7 @@ class MyComponent extends React.Component {
           <span className="ql-formats">
             <button className="generate-button" onClick={this.generateText}>Generate</button>
           </span>
-          <span className="ql-formats">
+          {/* <span className="ql-formats">
             <select className="ql-header">
               <option value="1">Heading 1</option>
               <option value="2">Heading 2</option>
@@ -234,7 +234,7 @@ class MyComponent extends React.Component {
           </span>
           <span className="ql-formats">
             <button className="ql-blockquote"></button>
-          </span>
+          </span> */}
         </div>
 
 
