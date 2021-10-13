@@ -6,7 +6,5 @@ models
 env
 output
 runs
-*.csv
-*.txt
 lyrics
 logs/
