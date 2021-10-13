@@ -113,7 +113,7 @@ class MyComponent extends React.Component {
     text = this.state.title + "\n" + text
 
     this.state.status = "Generating..."
-    return fetch("http://localhost:8000/gpt2_lyrics", {
+    return fetch("http://localhost:5000/gpt2_lyrics", {
       method: 'POST',
       // mode: 'no-cors', // no-cors, *cors, same-origin
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached

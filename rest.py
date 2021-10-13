@@ -18,7 +18,8 @@ from transformers import (
 
 from run_generation import generate
 # device = os.environ.get('DEVICE', 'cpu')
-device = "cuda:0"
+# device = "cuda:0"
+device = "cpu"
 flavor_id = device + os.environ.get('INSTANCE', ':0')
 
 if not os.path.exists("logs"):

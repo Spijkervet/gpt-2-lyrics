@@ -1,1 +1,1 @@
-uvicorn rest:app --host 0.0.0.0
+uvicorn rest:app --host 0.0.0.0 --port 5000
