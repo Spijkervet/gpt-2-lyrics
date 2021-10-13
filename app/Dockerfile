@@ -18,4 +18,4 @@ EXPOSE 5000
 
 RUN npm run build
 
-CMD [ "serve", "-s", "build"]
+CMD [ "serve", "-s", "build", "-l", "0.0.0.0:5000"]

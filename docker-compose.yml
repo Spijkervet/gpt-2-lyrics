@@ -1,0 +1,10 @@
+version: "3.5"
+services:
+  app:
+    build:
+      context: app/
+      dockerfile: Dockerfile
+    container_name: gpt-2-lyrics
+    network_mode: "host"
+    # ports:
+    #   - 5050:5000
