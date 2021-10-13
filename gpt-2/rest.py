@@ -1,7 +1,7 @@
 import os
 import threading
-import regex as re
 import logging
+import sys
 
 from googletrans import Translator
 
